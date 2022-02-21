@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{90D2F1D5-B876-4C96-9174-D4E95CD69510}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ToDoDatabase", "ToDoDatabase\ToDoDatabase.sqlproj", "{883C5C1C-0595-4578-8D81-F8420129EB1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90D2F1D5-B876-4C96-9174-D4E95CD69510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D2F1D5-B876-4C96-9174-D4E95CD69510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D2F1D5-B876-4C96-9174-D4E95CD69510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D2F1D5-B876-4C96-9174-D4E95CD69510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883C5C1C-0595-4578-8D81-F8420129EB1D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA347C07-D6D7-4189-B157-F05AD5756AF7}
+	EndGlobalSection
+EndGlobal
