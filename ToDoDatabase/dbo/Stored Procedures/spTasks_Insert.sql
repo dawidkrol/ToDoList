@@ -3,14 +3,9 @@
 	@Description nvarchar(MAX),
 	@Deadline DateTime2,
 	@UserId NVARCHAR (128),
-	@StatusTitle NVARCHAR(10)
+	@StatusId int
 AS
 BEGIN
-	/* TODO: Find better solution */
-	DECLARE @StatusId as int;
-	SET @StatusId = (SELECT s.Id FROM Statuses as s WHERE @StatusTitle = s.Title);
-
-
-	INSERT INTO [dbo].[Tasks](Title,Description,CreatingDate,Deadline,UserId,Status)
-	VALUES(@Title,@Description,GETDATE(),@Deadline,@UserId,@StatusId);
+	INSERT INTO [dbo].[Tasks](Title,Description,CreatingDate,LastModifiedDate,Deadline,UserId,Status, IsAvailable)
+	VALUES(@Title,@Description,GETDATE(),GETDATE(),@Deadline,@UserId,@StatusId,1);
 END

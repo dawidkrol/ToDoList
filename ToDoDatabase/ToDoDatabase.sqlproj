@@ -68,8 +68,16 @@
     <Build Include="dbo\Stored Procedures\spTasks_Insert.sql" />
     <Build Include="dbo\Stored Procedures\spStatuses_Get.sql" />
     <Build Include="dbo\Stored Procedures\spStatuses_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\spTasks_UpdateStatus.sql" />
+    <Build Include="dbo\Stored Procedures\spTasks_Update.sql" />
+    <Build Include="dbo\Stored Procedures\spTasks_ChangeAvailability.sql" />
+    <Build Include="dbo\Stored Procedures\spStatuses_ChangeAvailability.sql" />
+    <Build Include="dbo\Stored Procedures\spTasks_GetByStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ToDoDatabase.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ToDoDatabase.publish.xml" />
   </ItemGroup>
 </Project>
