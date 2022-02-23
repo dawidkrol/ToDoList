@@ -3,7 +3,8 @@
 	@Title NVARCHAR(50),
 	@Description NVARCHAR(MAX),
 	/*@Deadline DATETIME2,*/
-	@StatusId INT
+	@StatusId INT,
+	@UserId NVARCHAR (128)
 AS
 BEGIN
 	UPDATE Tasks
@@ -11,5 +12,5 @@ BEGIN
 		Description = @Description,
 		/*Deadline = @Deadline,*/
 		Status = @StatusId
-	WHERE @Id = Id;
+	WHERE @Id = Id AND @UserId = UserId;
 END
