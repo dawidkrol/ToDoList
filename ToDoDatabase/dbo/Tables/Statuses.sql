@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Statuses]
 (
-	[Id] INT NOT NULL PRIMARY KEY,
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY,
     [Title] NVARCHAR(10) NOT NULL,
     [UserId] NVARCHAR (128) NOT NULL,
     [IsAvailable] BIT NOT NULL
