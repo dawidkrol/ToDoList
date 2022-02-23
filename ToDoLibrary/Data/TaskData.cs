@@ -13,7 +13,7 @@ namespace ToDoLibrary.Data
         }
 
         public async Task<IEnumerable<TaskModel>> GetTasksAsync(string userId) =>
-            await _data.LoadDataAsync<TaskModel, dynamic>("[dbo].[spTasks_Get]", new { Id = userId });
+            await _data.LoadDataAsync<TaskModel, dynamic>("[dbo].[spTasks_Get]", new { UserId = userId });
 
         public async Task<IEnumerable<TaskModel>> GetTasksByStatusAsync(int StatusId, string userId) =>
             await _data.LoadDataAsync<TaskModel, dynamic>("[dbo].[spTasks_GetByStatus]", new { UserId = userId, StatusId });
