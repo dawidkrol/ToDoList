@@ -10,10 +10,12 @@ namespace API.Controllers
     public class TokenController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _config;
 
-        public TokenController(UserManager<IdentityUser> userManager)
+        public TokenController(UserManager<IdentityUser> userManager, IConfiguration config)
         {
             _userManager = userManager;
+            _config = config;
         }
 
         [Route("/token")]
@@ -32,27 +34,35 @@ namespace API.Controllers
 
         private async Task<bool> IsValidUsernameAndPassword(string username, string password)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await GetUser(username);
+
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
         private async Task<dynamic> GenerateToken(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await GetUser(username);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,username),
                 new Claim(ClaimTypes.NameIdentifier,user.Id),
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
+                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString())
             };
 
+            var tokenExpirationMins = ConfigurationBinder.GetValue<int>(_config, "Auth:Jwt:TokenExpirationInMinutes");
+            var issuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["Auth:Jwt:Key"]));
+            var now = DateTime.Now;
+
             var token = new JwtSecurityToken(
-                new JwtHeader(
-                    new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretSoDoNotTell")),
-                        SecurityAlgorithms.HmacSha256)),
-                new JwtPayload(claims));
+                                    issuer: _config["Auth:Jwt:Issuer"],
+                                    audience: _config["Auth:Jwt:Audience"],
+                                    claims: claims,
+                                    notBefore: now,
+                                    expires: now.Add(TimeSpan.FromMinutes(tokenExpirationMins)),
+                                    signingCredentials: new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256)
+                                    );
 
             var output = new
             {
@@ -61,6 +71,18 @@ namespace API.Controllers
             };
 
             return output;
+        }
+
+        private async Task<IdentityUser> GetUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null)
+            {
+                await _userManager.FindByEmailAsync(username);
+            }
+
+            return user;
         }
     }
 }

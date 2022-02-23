@@ -7,10 +7,12 @@ using System.Text;
 using ToDoLibrary.Data;
 using ToDoLibrary.DbAccess;
 
+IConfiguration configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
 
 var builder = WebApplication.CreateBuilder(args);
-//var _config = new ConfigurationManager();
-//_config.
+
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
@@ -36,12 +38,11 @@ builder.Services.AddAuthentication(options =>
     JWTBeareroptions.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("Secrets:SecurityKey"))),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretSoDoNotTell")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Auth:Jwt:Key"])),
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromMinutes(5)
+        ClockSkew = TimeSpan.FromMinutes(1)
     };
 });
 
@@ -95,17 +96,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-using (var scope =
-     app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-{
-    var dbContext =
-        scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-    //var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetService<UserManager<IdentityUser>>();
-
-    dbContext.Database.Migrate();
-}
 
 app.Run();
