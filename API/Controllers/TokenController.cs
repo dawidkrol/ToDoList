@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,7 +21,21 @@ namespace API.Controllers
 
         [Route("/token")]
         [HttpPost]
-        public async Task<IActionResult> Create(string userName, string password, string grant_type)
+        public async Task<IActionResult> Login([FromBody]TokenRequestModel model)
+        {
+            if (model?.grant_type == null)
+                return new StatusCodeResult(500);
+
+            switch (model.grant_type)
+            {
+                case "password":
+                    return await GetToken(model.username,model.password);
+                default:
+                    return new UnauthorizedResult();
+            }
+        }
+
+        public async Task<IActionResult> GetToken(string userName, string password)
         {
             if (await IsValidUsernameAndPassword(userName, password))
             {

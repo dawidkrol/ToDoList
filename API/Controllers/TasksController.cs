@@ -1,7 +1,8 @@
 ﻿using API.Models;
-using Mapster;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using System.Security.Claims;
 using ToDoLibrary.Data;
 
@@ -12,10 +13,12 @@ namespace API.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskData _data;
+        private readonly IMapper _mapper;
 
-        public TasksController(ITaskData data)
+        public TasksController(ITaskData data, IMapper mapper)
         {
             _data = data;
+            _mapper = mapper;
         }
         [Authorize]
         [HttpGet]
@@ -23,59 +26,87 @@ namespace API.Controllers
         {
             string userId = GetUserId();
 
-            return (await _data.GetTasksAsync(userId))
-                        .Adapt<IEnumerable<TaskModel>>();
+            return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksAsync(userId));
         }
 
-        // GET api/<TasksController>/bystatus
         [Authorize]
         [HttpGet("bystatus/{statusId}")]
         public async Task<IEnumerable<TaskModel>> Get(int statusId)
         {
             string userId = GetUserId();
 
-            return (await _data.GetTasksByStatusAsync(statusId, userId))
-                        .Adapt<IEnumerable<TaskModel>>();
+            return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksByStatusAsync(statusId, userId));
         }
 
-        // POST api/<TasksController>
-        //TODO: To change
         [Authorize]
-        [HttpPost("{statusId}")]
-        public async void Post([FromBody] TaskModel taskModel, int statusId)
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] TaskModel taskModel)
         {
             string userId = GetUserId();
-
-            await _data.CreateTaskAsync(taskModel.Adapt<ToDoLibrary.Models.TaskModel>(), userId, statusId);
+            try 
+            {
+                await _data.CreateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskModel>(taskModel), userId);
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 77777)
+                    throw new Exception("Incorrect status");
+                throw new Exception("Error");
+            }
+            return Ok();
         }
 
-        // PUT api/<TasksController>/5
         [Authorize]
-        [HttpPut("{statusId}")]
-        public async void Put([FromBody] TaskModel taskModel,int statusId)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] TaskModel taskModel)
         {
             string userId = GetUserId();
-
-            await _data.UpdateTaskAsync(taskModel.Adapt<ToDoLibrary.Models.TaskModel>(), statusId, userId);
+            try
+            {
+                await _data.UpdateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskModel>(taskModel), userId);
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 77777)
+                    throw new Exception("Incorrect status");
+                throw new Exception("Error");
+            }
+            return Ok();
         }
 
         [Authorize]
         [HttpPut("status")]
-        public async void Put(int taskId, int statusId)
+        public async Task<IActionResult> Put(int taskId, int statusId)
         {
             string userId = GetUserId();
 
-            await _data.UpdateTaskStatusAsync(taskId, statusId, userId);
+            try
+            {
+                await _data.UpdateTaskStatusAsync(taskId, statusId, userId);
+            }
+            catch (SqlException ex)
+            {
+                if(ex.Number == 77777)
+                    throw new Exception("Incorrect status");
+                throw new Exception("Error");
+            }
+            return Ok();
         }
 
-        // DELETE api/<TasksController>/5
         [Authorize]
         [HttpDelete]
-        public async void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             string userId = GetUserId();
-
-            await _data.ChangeTaskActiveFieldAsync(id, userId);
+            try
+            {
+                await _data.ChangeTaskActiveFieldAsync(id, userId);
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Error");
+            }
+            return Ok();
         }
 
         private string GetUserId()

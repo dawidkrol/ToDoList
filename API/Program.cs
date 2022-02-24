@@ -1,4 +1,5 @@
 using API.Data;
+using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +45,14 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(1)
     };
+});
+
+builder.Services.AddAutoMapper(config =>
+{
+    config.CreateMap<ToDoLibrary.Models.TaskModel, TaskModel>();
+    config.CreateMap<ToDoLibrary.Models.StatusModel, StatusModel>();
+    config.CreateMap<TaskModel, ToDoLibrary.Models.TaskModel>();
+    config.CreateMap<StatusModel, ToDoLibrary.Models.StatusModel>();
 });
 
 builder.Services.AddControllers();
