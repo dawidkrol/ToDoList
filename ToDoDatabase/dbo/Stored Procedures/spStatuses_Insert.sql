@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spStatuses_Insert]
 	@UserId NVARCHAR (128),
-	@Title NVARCHAR(10)
+	@Title NVARCHAR(50)
 AS
 BEGIN
 	INSERT INTO [dbo].[Statuses](Title, IsAvailable, UserId)
