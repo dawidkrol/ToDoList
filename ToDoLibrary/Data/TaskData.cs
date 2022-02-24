@@ -13,28 +13,28 @@ namespace ToDoLibrary.Data
         }
 
         public async Task<IEnumerable<TaskModel>> GetTasksAsync(string userId) =>
-            await _data.LoadDataAsync<TaskModel, dynamic>("[dbo].[spTasks_Get]", new { UserId = userId });
+            await _data.LoadMultipleMapDataAsync<TaskModel, dynamic, StatusModel>("[dbo].[spTasks_Get]", new { UserId = userId }, GetTaskModel);
 
         public async Task<IEnumerable<TaskModel>> GetTasksByStatusAsync(int StatusId, string userId) =>
-            await _data.LoadDataAsync<TaskModel, dynamic>("[dbo].[spTasks_GetByStatus]", new { UserId = userId, StatusId });
+            await _data.LoadMultipleMapDataAsync<TaskModel, dynamic, StatusModel>("[dbo].[spTasks_GetByStatus]", new { UserId = userId, StatusId }, GetTaskModel);
 
-        public async Task CreateTaskAsync(TaskModel taskModel, string userId, int statusId) =>
+        public async Task CreateTaskAsync(TaskModel taskModel, string userId) =>
             await _data.SaveDataAsync<dynamic>("[dbo].[spTasks_Insert]", new
             {
                 Title = taskModel.Title,
                 Description = taskModel.Description,
-                UserId = userId,
-                StatusId = statusId
+                StatusId = taskModel.Status.Id,
+                UserId = userId
             });
 
-        public async Task UpdateTaskAsync(TaskModel taskModel, int statusId, string userId)
+        public async Task UpdateTaskAsync(TaskModel taskModel, string userId)
         {
             await _data.SaveDataAsync<dynamic>("[dbo].[spTasks_Update]", new
             {
                 Id = taskModel.Id,
                 Title = taskModel.Title,
                 Description = taskModel.Description,
-                StatusId = statusId,
+                StatusId = taskModel.Status.Id,
                 UserId = userId
             });
         }
@@ -57,5 +57,11 @@ namespace ToDoLibrary.Data
                 UserId = userId
             });
         }
-    }
+
+        private TaskModel GetTaskModel(TaskModel task,StatusModel status)
+        {
+            task.Status = status;
+            return task;
+        }
+}
 }

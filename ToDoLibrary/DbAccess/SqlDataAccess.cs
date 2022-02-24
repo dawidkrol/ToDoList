@@ -21,6 +21,13 @@ public class SqlDataAccess : ISqlDataAccess
         return await connection.QueryAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
 
+    public async Task<IEnumerable<T>> LoadMultipleMapDataAsync<T, U, O>(string storedProcedure, U parameters,Func<T,O,T> func , string connectionId = "Default")
+    {
+        using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
+
+        return await connection.QueryAsync<T,O,T>(storedProcedure, func,param: parameters, commandType: CommandType.StoredProcedure);
+    }
+
     public async Task SaveDataAsync<T>(string storedProcedire, T parameters, string connectionId = "Default")
     {
         using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));

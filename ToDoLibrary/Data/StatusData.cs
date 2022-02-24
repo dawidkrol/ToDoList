@@ -21,11 +21,12 @@ namespace ToDoLibrary.Data
                 UserId = userId,
             });
         }
-        public async Task ChangeStatusActiveFieldAsync(StatusModel model) =>
+        public async Task ChangeStatusActiveFieldAsync(int id, string userId) =>
             await _data.SaveDataAsync<dynamic>("[dbo].[spStatuses_ChangeAvailability]", new
             {
-                Id = model.Id,
-                Avaliable = 0
+                Id = id,
+                Avaliable = 0,
+                UserId = userId
             });
     }
 }

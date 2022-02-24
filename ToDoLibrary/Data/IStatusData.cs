@@ -4,7 +4,7 @@ namespace ToDoLibrary.Data
 {
     public interface IStatusData
     {
-        Task ChangeStatusActiveFieldAsync(StatusModel model);
+        Task ChangeStatusActiveFieldAsync(int id, string userId);
         Task CreateStatusAsync(StatusModel model, string userId);
         Task<IEnumerable<StatusModel>> GetUserStatusesAsync(string userId);
     }
