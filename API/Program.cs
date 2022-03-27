@@ -17,7 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        connectionString: "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ToDoAppAuthDb;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+        connectionString: configuration.GetConnectionString("ToDoAppAuthDb")
+        ));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(config =>
 {
