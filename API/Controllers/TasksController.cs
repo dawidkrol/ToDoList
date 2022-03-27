@@ -14,11 +14,14 @@ namespace API.Controllers
     {
         private readonly ITaskData _data;
         private readonly IMapper _mapper;
+        private readonly ILogger<TasksController> _logger;
 
-        public TasksController(ITaskData data, IMapper mapper)
+        public TasksController(ITaskData data, IMapper mapper,
+            ILogger<TasksController> logger)
         {
             _data = data;
             _mapper = mapper;
+            _logger = logger;
         }
         [Authorize]
         [HttpGet]
@@ -50,7 +53,11 @@ namespace API.Controllers
             catch (SqlException ex)
             {
                 if (ex.Number == 77777)
+                {
+                    _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
+                }
+                _logger.LogError(ex);
                 throw new Exception("Error");
             }
             return Ok();
@@ -68,7 +75,11 @@ namespace API.Controllers
             catch (SqlException ex)
             {
                 if (ex.Number == 77777)
+                {
+                    _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
+                }
+                _logger.LogError(ex);
                 throw new Exception("Error");
             }
             return Ok();
@@ -86,8 +97,12 @@ namespace API.Controllers
             }
             catch (SqlException ex)
             {
-                if(ex.Number == 77777)
+                if (ex.Number == 77777)
+                {
+                    _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
+                }
+                _logger.LogError(ex);
                 throw new Exception("Error");
             }
             return Ok();
@@ -104,6 +119,7 @@ namespace API.Controllers
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex);
                 throw new Exception("Error");
             }
             return Ok();

@@ -14,17 +14,21 @@ namespace API.Controllers
     {
         private readonly IStatusData _statusData;
         private readonly IMapper _mapper;
+        private readonly ILogger<StatusesController> _logger;
 
-        public StatusesController(IStatusData statusData, IMapper mapper)
+        public StatusesController(IStatusData statusData, IMapper mapper,
+            ILogger<StatusesController> logger)
         {
             _statusData = statusData;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IEnumerable<StatusModel>> Get()
         {
+
             return _mapper.Map<IEnumerable<StatusModel>>(await _statusData.GetUserStatusesAsync(GetUserId()));
         }
 
@@ -46,7 +50,12 @@ namespace API.Controllers
             catch (SqlException ex)
             {
                 if (ex.Number == 77777)
-                    throw new Exception("You cannot delete this status");
+                {
+                    _logger.LogError(ex,"Cannot delete status wich id = {id}",id);
+                    throw new Exception($"You cannot delete this status");
+                }
+
+                _logger.LogError(ex);
                 throw new Exception("Error");
             }
             return Ok();

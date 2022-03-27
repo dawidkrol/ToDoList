@@ -6,10 +6,12 @@ namespace API.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(UserManager<IdentityUser> userManager)
+        public UserController(UserManager<IdentityUser> userManager, ILogger<UserController> logger)
         {
             _userManager = userManager;
+            _logger = logger;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(string username, string email, string password)
@@ -28,9 +30,11 @@ namespace API.Controllers
 
             if (result.Succeeded)
             {
+                _logger.LogInformation("Registered user {newUser}", newUser);
                 return Ok(result);
             }
 
+            _logger.LogError("Cannot register user {newUser}", newUser);
             return BadRequest(result);
         }
     }

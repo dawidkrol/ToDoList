@@ -12,11 +12,15 @@ namespace API.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _config;
+        private readonly ILogger<TokenController> _logger;
 
-        public TokenController(UserManager<IdentityUser> userManager, IConfiguration config)
+        public TokenController(UserManager<IdentityUser> userManager,
+            IConfiguration config,
+            ILogger<TokenController> logger)
         {
             _userManager = userManager;
             _config = config;
+            _logger = logger;
         }
 
         [Route("/token")]
@@ -24,13 +28,17 @@ namespace API.Controllers
         public async Task<IActionResult> Login([FromBody]TokenRequestModel model)
         {
             if (model?.grant_type == null)
+            {
+                _logger.LogInformation("Token request haven't grand_type");
                 return new StatusCodeResult(500);
+            }
 
             switch (model.grant_type)
             {
                 case "password":
                     return await GetToken(model.username,model.password);
                 default:
+                    _logger.LogError("Token request have incorrect grand_type");
                     return new UnauthorizedResult();
             }
         }
@@ -39,10 +47,12 @@ namespace API.Controllers
         {
             if (await IsValidUsernameAndPassword(userName, password))
             {
+                _logger.LogInformation("Generting token for user {userName}", userName);
                 return new ObjectResult(await GenerateToken(userName));
             }
             else
             {
+                _logger.LogError("Incorrect {username}`s password", userName);
                 return BadRequest();
             }
         }
