@@ -12,13 +12,13 @@ namespace ToDoLibrary.Data
             _data = data;
         }
 
-        public async Task<IEnumerable<TaskModel>> GetTasksAsync(string userId) =>
-            await _data.LoadMultipleMapDataAsync<TaskModel, dynamic, StatusModel>("[dbo].[spTasks_Get]", new { UserId = userId }, GetTaskModel);
+        public async Task<IEnumerable<TaskDbModel>> GetTasksAsync(string userId) =>
+            await _data.LoadMultipleMapDataAsync<TaskDbModel, dynamic, StatusDbModel>("[dbo].[spTasks_Get]", new { UserId = userId }, GetTaskModel);
 
-        public async Task<IEnumerable<TaskModel>> GetTasksByStatusAsync(int StatusId, string userId) =>
-            await _data.LoadMultipleMapDataAsync<TaskModel, dynamic, StatusModel>("[dbo].[spTasks_GetByStatus]", new { UserId = userId, StatusId }, GetTaskModel);
+        public async Task<IEnumerable<TaskDbModel>> GetTasksByStatusAsync(int StatusId, string userId) =>
+            await _data.LoadMultipleMapDataAsync<TaskDbModel, dynamic, StatusDbModel>("[dbo].[spTasks_GetByStatus]", new { UserId = userId, StatusId }, GetTaskModel);
 
-        public async Task CreateTaskAsync(TaskModel taskModel, string userId) =>
+        public async Task CreateTaskAsync(TaskDbModel taskModel, string userId) =>
             await _data.SaveDataAsync<dynamic>("[dbo].[spTasks_Insert]", new
             {
                 Title = taskModel.Title,
@@ -27,7 +27,7 @@ namespace ToDoLibrary.Data
                 UserId = userId
             });
 
-        public async Task UpdateTaskAsync(TaskModel taskModel, string userId)
+        public async Task UpdateTaskAsync(TaskDbModel taskModel, string userId)
         {
             await _data.SaveDataAsync<dynamic>("[dbo].[spTasks_Update]", new
             {
@@ -58,7 +58,7 @@ namespace ToDoLibrary.Data
             });
         }
 
-        private TaskModel GetTaskModel(TaskModel task,StatusModel status)
+        private TaskDbModel GetTaskModel(TaskDbModel task,StatusDbModel status)
         {
             task.Status = status;
             return task;

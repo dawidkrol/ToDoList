@@ -11,9 +11,9 @@ namespace ToDoLibrary.Data
         {
             _data = data;
         }
-        public async Task<IEnumerable<StatusModel>> GetUserStatusesAsync(string userId) =>
-            await _data.LoadDataAsync<StatusModel, dynamic>("[dbo].[spStatuses_Get]", new { UserId = userId });
-        public async Task CreateStatusAsync(StatusModel model, string userId)
+        public async Task<IEnumerable<StatusDbModel>> GetUserStatusesAsync(string userId) =>
+            await _data.LoadDataAsync<StatusDbModel, dynamic>("[dbo].[spStatuses_Get]", new { UserId = userId });
+        public async Task CreateStatusAsync(StatusDbModel model, string userId)
         {
             await _data.SaveDataAsync("[dbo].[spStatuses_Insert]", new
             {

@@ -50,10 +50,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAutoMapper(config =>
 {
-    config.CreateMap<ToDoLibrary.Models.TaskModel, TaskModel>();
-    config.CreateMap<ToDoLibrary.Models.StatusModel, StatusModel>();
-    config.CreateMap<TaskModel, ToDoLibrary.Models.TaskModel>();
-    config.CreateMap<StatusModel, ToDoLibrary.Models.StatusModel>();
+    config.CreateMap<ToDoLibrary.Models.TaskDbModel, TaskModel>();
+    config.CreateMap<ToDoLibrary.Models.StatusDbModel, StatusModel>();
+    config.CreateMap<TaskModel, ToDoLibrary.Models.TaskDbModel>();
+    config.CreateMap<StatusModel, ToDoLibrary.Models.StatusDbModel>();
 });
 
 builder.Services.AddControllers();

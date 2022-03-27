@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ToDoLibrary.Models
 {
-    public class TaskModel
+    public class TaskDbModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string? Description { get; set; }
         public DateTime CreatingDate { get; set; }
-        public StatusModel Status { get; set; }
+        public StatusDbModel Status { get; set; }
     }
 }

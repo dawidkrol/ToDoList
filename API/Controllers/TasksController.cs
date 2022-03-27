@@ -45,7 +45,7 @@ namespace API.Controllers
             string userId = GetUserId();
             try 
             {
-                await _data.CreateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskModel>(taskModel), userId);
+                await _data.CreateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskDbModel>(taskModel), userId);
             }
             catch (SqlException ex)
             {
@@ -63,7 +63,7 @@ namespace API.Controllers
             string userId = GetUserId();
             try
             {
-                await _data.UpdateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskModel>(taskModel), userId);
+                await _data.UpdateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskDbModel>(taskModel), userId);
             }
             catch (SqlException ex)
             {

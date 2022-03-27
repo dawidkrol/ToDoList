@@ -32,7 +32,7 @@ namespace API.Controllers
         [HttpPost]
         public async void Post([FromBody] StatusModel status)
         {
-            await _statusData.CreateStatusAsync(_mapper.Map<ToDoLibrary.Models.StatusModel>(status), GetUserId());
+            await _statusData.CreateStatusAsync(_mapper.Map<ToDoLibrary.Models.StatusDbModel>(status), GetUserId());
         }
 
         [Authorize]
