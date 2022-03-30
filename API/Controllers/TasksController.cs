@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
 using System.Security.Claims;
 using ToDoLibrary.Data;
@@ -57,7 +58,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex);
+                _logger.LogError(ex, null);
                 throw new Exception("Error");
             }
             return Ok();
@@ -79,7 +80,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex);
+                _logger.LogError(ex,null);
                 throw new Exception("Error");
             }
             return Ok();
@@ -102,7 +103,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex);
+                _logger.LogError(ex,null);
                 throw new Exception("Error");
             }
             return Ok();
@@ -119,7 +120,7 @@ namespace API.Controllers
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex);
+                _logger.LogError(ex,null);
                 throw new Exception("Error");
             }
             return Ok();

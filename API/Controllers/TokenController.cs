@@ -36,7 +36,9 @@ namespace API.Controllers
             switch (model.grant_type)
             {
                 case "password":
-                    return await GetToken(model.username,model.password);
+                    var token = await GetToken(model.username, model.password);
+                    _logger.LogInformation("User {username} is logged in", model.username);
+                    return token;
                 default:
                     _logger.LogError("Token request have incorrect grand_type");
                     return new UnauthorizedResult();

@@ -28,7 +28,6 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IEnumerable<StatusModel>> Get()
         {
-
             return _mapper.Map<IEnumerable<StatusModel>>(await _statusData.GetUserStatusesAsync(GetUserId()));
         }
 
@@ -55,7 +54,7 @@ namespace API.Controllers
                     throw new Exception($"You cannot delete this status");
                 }
 
-                _logger.LogError(ex);
+                _logger.LogError(ex,"Exception during deleting status");
                 throw new Exception("Error");
             }
             return Ok();
