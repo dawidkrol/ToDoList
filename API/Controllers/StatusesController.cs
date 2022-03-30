@@ -28,14 +28,28 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IEnumerable<StatusModel>> Get()
         {
-            return _mapper.Map<IEnumerable<StatusModel>>(await _statusData.GetUserStatusesAsync(GetUserId()));
+            try
+            {
+                return _mapper.Map<IEnumerable<StatusModel>>(await _statusData.GetUserStatusesAsync(GetUserId()));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error");
+            }
         }
 
         [Authorize]
         [HttpPost]
         public async void Post([FromBody] StatusModel status)
         {
-            await _statusData.CreateStatusAsync(_mapper.Map<ToDoLibrary.Models.StatusDbModel>(status), GetUserId());
+            try
+            {
+                await _statusData.CreateStatusAsync(_mapper.Map<ToDoLibrary.Models.StatusDbModel>(status), GetUserId());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error");
+            }
         }
 
         [Authorize]

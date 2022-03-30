@@ -29,17 +29,40 @@ namespace API.Controllers
         public async Task<IEnumerable<TaskModel>> Get()
         {
             string userId = GetUserId();
-
-            return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksAsync(userId));
+            try
+            {
+                return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksAsync(userId));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception while loading tasks");
+                throw new Exception("Error");
+            }
         }
 
         [Authorize]
         [HttpGet("bystatus/{statusId}")]
         public async Task<IEnumerable<TaskModel>> Get(int statusId)
         {
-            string userId = GetUserId();
+            try
+            {
+                string userId = GetUserId();
 
-            return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksByStatusAsync(statusId, userId));
+                return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksByStatusAsync(statusId, userId));
+            }
+            catch(SqlException ex)
+            {
+                _logger?.LogError(ex, "Exception while loading tasks from database");
+                throw new Exception("Error");
+            }
+            catch(Exception ex) when (ex.Message == "Cannot load userId")
+            {
+                throw new Exception("Cannot load userId");
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error");
+            }
         }
 
         [Authorize]
@@ -58,7 +81,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex, null);
+                _logger.LogError(ex, "Error while adding new task");
                 throw new Exception("Error");
             }
             return Ok();
@@ -80,7 +103,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex,null);
+                _logger.LogError(ex,"Error while updating task");
                 throw new Exception("Error");
             }
             return Ok();
@@ -103,7 +126,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex,null);
+                _logger.LogError(ex,"Error while changing task status");
                 throw new Exception("Error");
             }
             return Ok();
@@ -120,7 +143,7 @@ namespace API.Controllers
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex,null);
+                _logger.LogError(ex, "The active field of the task cannot be changed");
                 throw new Exception("Error");
             }
             return Ok();
@@ -128,7 +151,14 @@ namespace API.Controllers
 
         private string GetUserId()
         {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            catch(SqlException ex)
+            {
+                throw new Exception("Cannot load userId");
+            }
         }
     }
 }
