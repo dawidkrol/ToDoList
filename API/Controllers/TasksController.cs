@@ -67,7 +67,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TaskModel taskModel)
+        public async Task<IActionResult> Post([FromBody] CreateTaskModel taskModel)
         {
             string userId = GetUserId();
             try
@@ -90,7 +90,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] TaskModel taskModel)
+        public async Task<IActionResult> Put([FromBody] UpdateTaskModel taskModel)
         {
             string userId = GetUserId();
             try

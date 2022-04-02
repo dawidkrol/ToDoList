@@ -59,8 +59,13 @@ builder.Services.AddAutoMapper(config =>
 {
     config.CreateMap<ToDoLibrary.Models.TaskDbModel, TaskModel>();
     config.CreateMap<ToDoLibrary.Models.StatusDbModel, StatusModel>();
-    config.CreateMap<TaskModel, ToDoLibrary.Models.TaskDbModel>();
-    config.CreateMap<StatusModel, ToDoLibrary.Models.StatusDbModel>();
+    config.CreateMap<CreateTaskModel, ToDoLibrary.Models.TaskDbModel>().ForPath(
+                dest => dest.Status.Id,
+                opts => opts.MapFrom(src => src.StatusId));
+    config.CreateMap<CreateStatusModel, ToDoLibrary.Models.StatusDbModel>();
+    config.CreateMap<UpdateTaskModel, ToDoLibrary.Models.TaskDbModel>().ForPath(
+                dest => dest.Status.Id,
+                opts => opts.MapFrom(src => src.StatusId));
 });
 
 builder.Services.AddControllers();

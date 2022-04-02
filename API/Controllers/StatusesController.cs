@@ -40,7 +40,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost]
-        public async void Post([FromBody] StatusModel status)
+        public async void Post([FromBody] CreateStatusModel status)
         {
             try
             {
