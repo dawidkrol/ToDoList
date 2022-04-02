@@ -22,6 +22,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.0-dev-00265" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.1-dev-00787" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.2.0-dev-00752" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.1-dev-00296" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.2-dev-00222" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
@@ -29,5 +35,11 @@
   <ItemGroup>
     <ProjectReference Include="..\ToDoLibrary\ToDoLibrary.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
