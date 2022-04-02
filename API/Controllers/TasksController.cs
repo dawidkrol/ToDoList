@@ -2,7 +2,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
 using System.Security.Claims;
 using ToDoLibrary.Data;
@@ -31,6 +30,7 @@ namespace API.Controllers
             string userId = GetUserId();
             try
             {
+                _logger.LogTrace("Getting user tasks");
                 return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksAsync(userId));
             }
             catch (Exception ex)
@@ -47,19 +47,19 @@ namespace API.Controllers
             try
             {
                 string userId = GetUserId();
-
+                _logger.LogInformation("Getting task by status: {status}", statusId);
                 return _mapper.Map<IEnumerable<TaskModel>>(await _data.GetTasksByStatusAsync(statusId, userId));
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 _logger?.LogError(ex, "Exception while loading tasks from database");
                 throw new Exception("Error");
             }
-            catch(Exception ex) when (ex.Message == "Cannot load userId")
+            catch (Exception ex) when (ex.Message == "Cannot load userId")
             {
                 throw new Exception("Cannot load userId");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("Error");
             }
@@ -70,9 +70,10 @@ namespace API.Controllers
         public async Task<IActionResult> Post([FromBody] TaskModel taskModel)
         {
             string userId = GetUserId();
-            try 
+            try
             {
                 await _data.CreateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskDbModel>(taskModel), userId);
+                _logger.LogInformation("Created task: {newTask} for user: {user}", taskModel, userId);
             }
             catch (SqlException ex)
             {
@@ -94,6 +95,7 @@ namespace API.Controllers
             string userId = GetUserId();
             try
             {
+                _logger.LogTrace("updating task id: {id}", taskModel.Id);
                 await _data.UpdateTaskAsync(_mapper.Map<ToDoLibrary.Models.TaskDbModel>(taskModel), userId);
             }
             catch (SqlException ex)
@@ -103,7 +105,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex,"Error while updating task");
+                _logger.LogError(ex, "Error while updating task");
                 throw new Exception("Error");
             }
             return Ok();
@@ -117,6 +119,7 @@ namespace API.Controllers
 
             try
             {
+                _logger.LogInformation("Updating status to {statusId} for task id: {id}", statusId, taskId);
                 await _data.UpdateTaskStatusAsync(taskId, statusId, userId);
             }
             catch (SqlException ex)
@@ -126,7 +129,7 @@ namespace API.Controllers
                     _logger.LogError(ex, "Task has incorrect status");
                     throw new Exception("Incorrect status");
                 }
-                _logger.LogError(ex,"Error while changing task status");
+                _logger.LogError(ex, "Error while changing task status");
                 throw new Exception("Error");
             }
             return Ok();
@@ -139,6 +142,7 @@ namespace API.Controllers
             string userId = GetUserId();
             try
             {
+                _logger.LogInformation("Deleting task id: {id}", id);
                 await _data.ChangeTaskActiveFieldAsync(id, userId);
             }
             catch (SqlException ex)
@@ -155,7 +159,7 @@ namespace API.Controllers
             {
                 return User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 throw new Exception("Cannot load userId");
             }

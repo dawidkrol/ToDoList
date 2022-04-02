@@ -19,6 +19,7 @@ namespace ToDoLibrary.Data
         {
             try
             {
+                _logger.LogInformation("Getting users statuses userId: {id}", userId);
                 return await _data.LoadDataAsync<StatusDbModel, dynamic>("[dbo].[spStatuses_Get]", new { UserId = userId });
             }
             catch (Exception ex)
